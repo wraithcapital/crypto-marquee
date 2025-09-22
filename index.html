@@ -1,15 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <title>Crypto Marquee</title>
-</head>
-<body style="margin:0;padding:0;background:#0b1020;">
   <script src="https://widgets.coingecko.com/gecko-coin-price-marquee-widget.js"></script>
-  <gecko-coin-price-marquee-widget
+  <style>
+    body {
+      margin: 0;
+      background-color: #0d1117; /* nền tối */
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    gecko-coin-price-marquee-widget {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <gecko-coin-price-marquee-widget 
     locale="vi"
+    dark-mode="true"
     outlined="true"
-    coin-ids="bitcoin,solana,jupiter,jito,solayer,zeus"
+    coin-ids="bitcoin,solana,jupiter-exchange-solana,jupiter-perpetuals-liquidity-provider-token,jito-governance-token,zeus-network,pump-fun,bonk,solayer"
     initial-currency="usd">
   </gecko-coin-price-marquee-widget>
 </body>
