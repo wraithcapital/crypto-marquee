@@ -2,32 +2,54 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Bảng Giá Token (CoinGecko)</title>
+  <title>Crypto Marquee (CoinGecko)</title>
   <style>
     body {
       background: #111;
       color: #eee;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 30px;
+      margin: 0;
+      padding: 0;
     }
-    .token {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+
+    .marquee-wrap {
+      width: 100%;
       background: #1a1a1a;
-      border-radius: 12px;
-      padding: 10px 20px;
-      margin: 10px auto;
-      width: fit-content;
-      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    img {
-      width: 28px;
-      height: 28px;
+
+    .marquee {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 35s linear infinite;
+    }
+
+    @keyframes scroll-left {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .token {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-right: 30px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.05);
+      padding: 4px 10px;
+      border-radius: 16px;
+    }
+
+    .token img {
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
     }
+
     .price {
       font-weight: bold;
       color: #4cafef;
@@ -35,24 +57,59 @@
   </style>
 </head>
 <body>
-  <h2>Bảng Giá Token (CoinGecko)</h2>
-  <div id="prices">Đang tải...</div>
+  <div class="marquee-wrap">
+    <div id="marquee" class="marquee">Đang tải giá...</div>
+  </div>
 
   <script>
     async function loadPrices() {
       const ids = [
-        "bitcoin",                                // BTC
-        "solana",                                 // SOL
-        "jupiter-exchange-solana",                // JUP
-        "jito-governance-token",                  // JTO
-        "zeus-network",                           // ZEUS
-        "pump-fun",                               // PUMP
-        "bonk",                                   // BONK
-        "solayer",                                // LAYER
-        "jupiter-perpetuals-liquidity-provider-token", // JLP
-        "orca",                                   // ORCA
-        "raydium",                                // RAY
-        "marinade",                               // MNDE
-        "save"                                    // SAVE
+        "bitcoin",                                
+        "solana",                                 
+        "jupiter-exchange-solana",                
+        "jito-governance-token",                  
+        "zeus-network",                           
+        "pump-fun",                               
+        "bonk",                                   
+        "solayer",                                
+        "jupiter-perpetuals-liquidity-provider-token", 
+        "orca",                                   
+        "raydium",                                
+        "marinade",                               
+        "save"                                    
       ];
-      const url = `https://api.coingecko.com/api/v3/coins/mar
+      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const marquee = document.getElementById("marquee");
+        marquee.innerHTML = "";
+
+        if (!data.length) {
+          marquee.innerHTML = "<span>Lỗi tải dữ liệu...</span>";
+          return;
+        }
+
+        data.forEach(token => {
+          const span = document.createElement("span");
+          span.className = "token";
+          span.innerHTML = `
+            <img src="${token.image}" alt="${token.symbol}">
+            <span>${token.symbol.toUpperCase()}</span>
+            <span class="price">$${token.current_price.toLocaleString()}</span>
+          `;
+          marquee.appendChild(span);
+        });
+      } catch (err) {
+        document.getElementById("marquee").innerText = "Lỗi tải giá...";
+        console.error(err);
+      }
+    }
+
+    loadPrices();
+    setInterval(loadPrices, 60000); // cập nhật mỗi phút
+  </script>
+</body>
+</html>
