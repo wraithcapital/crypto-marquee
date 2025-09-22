@@ -2,27 +2,98 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Crypto Marquee</title>
-  <script src="https://widgets.coingecko.com/gecko-coin-price-marquee-widget.js"></script>
+  <title>Crypto Marquee (CoinGecko)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
-      background-color: #0d1117; /* nền tối */
-      color: white;
-      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      font-family: Inter, Arial, sans-serif;
     }
-    gecko-coin-price-marquee-widget {
-      width: 100%;
+    .marquee-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+      background: #111;
+      padding: 8px 0;
+    }
+    .marquee {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 30s linear infinite;
+    }
+    @keyframes scroll-left {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    .coin {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 20px;
+      font-size: 14px;
+      color: #e6eef8;
+    }
+    .coin span {
+      margin-left: 6px;
+    }
+    .price {
+      font-weight: 600;
+    }
+    .up {
+      color: #7ee787;
+    }
+    .down {
+      color: #ff8a8a;
     }
   </style>
 </head>
 <body>
-  <gecko-coin-price-marquee-widget 
-    locale="vi"
-    dark-mode="true"
-    outlined="true"
-    coin-ids="bitcoin,solana,jupiter-exchange-solana,jupiter-perpetuals-liquidity-provider-token,jito-governance-token,zeus-network,pump-fun,bonk,solayer"
-    initial-currency="usd">
-  </gecko-coin-price-marquee-widget>
+  <div class="marquee-wrap">
+    <div id="marquee" class="marquee">Đang tải giá...</div>
+  </div>
+
+  <script>
+    const coins = [
+      { id: "bitcoin", label: "Bitcoin (BTC)" },
+      { id: "solana", label: "Solana (SOL)" },
+      { id: "jupiter-exchange", label: "Jupiter (JUP)" },
+      { id: "jupiter-perpetuals-liquidity-provider-token", label: "JLP" },
+      { id: "jito-governance-token", label: "Jito (JTO)" },
+      { id: "zeus-network", label: "Zeus (ZEUS)" },
+      { id: "pump-fun", label: "Pump.fun (PUMP)" },
+      { id: "bonk", label: "Bonk (BONK)" },
+      { id: "solayer", label: "Solayer (LAYER)" }
+    ];
+
+    async function fetchPrices() {
+      try {
+        const ids = coins.map(c => c.id).join(",");
+        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        let html = "";
+        coins.forEach(c => {
+          const info = data[c.id];
+          if (info) {
+            const price = info.usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 6});
+            const change = info.usd_24h_change?.toFixed(2);
+            const cls = change >= 0 ? "up" : "down";
+            html += `<span class="coin">${c.label}<span class="price">$${price}</span><span class="${cls}">${change}%</span></span>`;
+          } else {
+            html += `<span class="coin">${c.label}<span class="price">—</span></span>`;
+          }
+        });
+        document.getElementById("marquee").innerHTML = html;
+      } catch (err) {
+        document.getElementById("marquee").innerHTML = "Lỗi tải dữ liệu từ CoinGecko";
+        console.error(err);
+      }
+    }
+
+    fetchPrices();
+    setInterval(fetchPrices, 15000); // cập nhật mỗi 15 giây
+  </script>
 </body>
 </html>
