@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Crypto Prices</title>
+  <title>Bảng Giá Token (CoinGecko)</title>
   <style>
     body {
       background: #111;
@@ -24,8 +24,9 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.6);
     }
     img {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
     }
     .price {
       font-weight: bold;
@@ -35,9 +36,23 @@
 </head>
 <body>
   <h2>Bảng Giá Token (CoinGecko)</h2>
-  <div id="prices"></div>
+  <div id="prices">Đang tải...</div>
 
   <script>
     async function loadPrices() {
       const ids = [
-        "bitcoin",                /
+        "bitcoin",                                // BTC
+        "solana",                                 // SOL
+        "jupiter-exchange-solana",                // JUP
+        "jito-governance-token",                  // JTO
+        "zeus-network",                           // ZEUS
+        "pump-fun",                               // PUMP
+        "bonk",                                   // BONK
+        "solayer",                                // LAYER
+        "jupiter-perpetuals-liquidity-provider-token", // JLP
+        "orca",                                   // ORCA
+        "raydium",                                // RAY
+        "marinade",                               // MNDE
+        "save"                                    // SAVE
+      ];
+      const url = `https://api.coingecko.com/api/v3/coins/mar
