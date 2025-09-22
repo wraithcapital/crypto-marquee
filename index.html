@@ -1,32 +1,79 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Crypto Marquee</title>
-  <script src="https://widgets.coingecko.com/gecko-coin-price-marquee-widget.js"></script>
+  <title>Crypto Marquee (Jupiter API)</title>
   <style>
     body {
-      background: #000;
+      background-color: #111;
       margin: 0;
+      font-family: Arial, sans-serif;
     }
-    /* Ẩn tên dài, chỉ giữ logo + ticker + giá */
-    gecko-coin-price-marquee-widget .coin-name {
-      display: none !important;
+    .marquee {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      border-bottom: 1px solid #222;
+      background: #111;
+      color: #eee;
+      padding: 10px 0;
     }
-    /* Làm ticker nổi bật hơn */
-    gecko-coin-price-marquee-widget .coin-symbol {
-      font-weight: bold !important;
-      font-size: 14px !important;
+    .marquee-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 25s linear infinite;
+    }
+    .token {
+      display: inline-block;
+      margin: 0 30px;
+      font-size: 16px;
+    }
+    .price {
+      margin-left: 5px;
+      font-weight: bold;
+    }
+    .red {
+      color: #ff4d4d;
+    }
+    .green {
+      color: #4dff4d;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0%); }
+      to   { transform: translateX(-100%); }
     }
   </style>
 </head>
 <body>
-  <gecko-coin-price-marquee-widget 
-    locale="vi"
-    dark-mode="true"
-    outlined="true"
-    coin-ids="bitcoin,solana,jupiter-exchange-solana,jupiter-perpetuals-liquidity-provider-token,jito-governance-token,zeus-network,pump-fun,bonk,solayer"
-    initial-currency="usd">
-  </gecko-coin-price-marquee-widget>
+  <div class="marquee">
+    <div class="marquee-content" id="ticker"></div>
+  </div>
+
+  <script>
+    async function loadPrices() {
+      const tokens = ["BTC", "SOL", "JUP", "JLP", "JTO", "ZEUS", "PUMP"];
+      const url = `https://price.jup.ag/v6/price?ids=${tokens.join(",")}&vsToken=USDC`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const ticker = document.getElementById("ticker");
+
+        ticker.innerHTML = "";
+        tokens.forEach(t => {
+          if (data.data[t]) {
+            const price = data.data[t].price.toFixed(2);
+            ticker.innerHTML += `<span class="token">${t} <span class="price">$${price}</span></span>`;
+          }
+        });
+      } catch (e) {
+        console.error("Error fetching prices:", e);
+      }
+    }
+
+    loadPrices();
+    setInterval(loadPrices, 30000); // update mỗi 30 giây
+  </script>
 </body>
 </html>
