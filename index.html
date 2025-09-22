@@ -1,50 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <title>Crypto Ticker (CoinGecko)</title>
+  <meta charset="UTF-8" />
+  <title>Crypto Marquee (Jupiter API)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    :root{
-      --bg:#000;
-      --bar:#0b0b0b;
-      --text:#e6eef8;
-      --muted:#98a8bd;
-      --up:#00ff88;
-      --down:#ff6b6b;
-    }
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,Helvetica,sans-serif}
-    .bar{
-      width:100%;
-      background:var(--bar);
-      padding:8px 12px;
-      box-sizing:border-box;
-      border-top:1px solid rgba(255,255,255,0.03);
-      border-bottom:1px solid rgba(255,255,255,0.03);
-      overflow:hidden;
+    :root {
+      --bg: #000;
+      --panel: #0b0b0b;
+      --text: #e6eef8;
+      --muted: #9fb0c8;
     }
 
-    .scroller{
-      display:inline-block;
-      white-space:nowrap;
-      animation: scroll 30s linear infinite;
-      will-change: transform;
+    html,body {
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     }
-    @keyframes scroll {
-      0% { transform: translateX(100%); }
+
+    .marquee-wrap {
+      width:100%;
+      background:var(--panel);
+      padding:8px 12px;
+      border-top:1px solid rgba(255,255,255,0.03);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      box-sizing:border-box;
+    }
+
+    .marquee {
+      overflow:hidden;
+      white-space:nowrap;
+    }
+
+    .scroller {
+      display:inline-block;
+      animation:scroll-left 30s linear infinite;
+    }
+
+    @keyframes scroll-left {
+      0%   { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
     }
 
-    .token {
+    .item {
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      padding:6px 16px;
-      margin-right:18px;
-      border-radius:999px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      gap:6px;
+      padding:6px 14px;
+      margin-right:14px;
+      background:rgba(255,255,255,0.02);
+      border-radius:16px;
       font-size:14px;
-      color:var(--text);
+      font-weight:600;
     }
-    .logo {
-      width:20px; height
+    .ticker { color:var(--text); }
+    .price  { font-variant-numeric: tabular-nums; }
+    .muted  { color:var(--muted); font-size:12px; margin-left:8px; }
+    .updated{ color:var(--muted); font-size:12px; padding-left:12px; }
+
+    @media (max-width:600px){
+      .scroller { animation-duration:45s; }
+      .item { font-size:13px; padding:6px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="marquee-wrap">
+    <div class="marquee" aria-live="polite">
+      <div id="scroller" class="scroller">
+        <span class="muted">Đang tải giá...</span>
+      </div>
+      <span id="updated" class="updated"></span>
+    </div>
+  </div>
+
+  <script>
+    const coins = [
+      { id: "BTC", label: "BTC" },
+      { id: "SOL", label: "SOL" },
+      { id: "JUP", label: "JUP" },
+      { id: "JLP", label: "JLP" },
+      { id: "JTO", label: "JTO" },
+      { id: "ZEUS", label: "ZEUS" },
+      { id: "PUMP", label: "PUMP" },
+      { id: "BONK", label: "BONK" },
+      { id: "LAYER", label: "LAYER" }
+    ];
+
+    const SCROLLER = document.getElementById('scroller');
+    const UPDATED  = document.getElementById('updated');
+    const POLL_MS  = 10000;
+
+    function fmtPrice(n){
+      if (n == null) return "—";
+      if (n >= 1000) return n.toLocaleString(undefined,{maximumFractionDigits:0});
+      if (n >= 1) return n.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+      return Number(n.toFixed(6)).toString();
+    }
+
+    async function fetchPrices(){
+      const ids = coins.map(c => c.id).join(",");
+      const url = "https://price.jup.ag/v6/price?ids=" + encodeURIComponent(ids);
+
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        const data = json.data || {};
+
+        let html = "";
+        coins.forEach(c => {
+          const p = data[c.id];
+          const price = p && typeof p.price === "number" ? fmtPrice(p.price) : "—";
+          html += `<span class="item"><span class="ticker">${c.label}</span><span class="price">$${price}</span></span>`;
+        });
+
+        SCROLLER.innerHTML = html;
+        UPDATED.textContent = "Cập nhật: " + new Date().toLocaleTimeString();
+      } catch(e){
+        console.error(e);
+        SCROLLER.innerHTML = '<span class="muted">Lỗi tải giá...</span>';
+        UPDATED.textContent = "Lỗi";
+      }
+    }
+
+    fetchPrices();
+    setInterval(fetchPrices, POLL_MS);
+  </script>
+</body>
+</html>
