@@ -1,79 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Crypto Marquee (Jupiter API)</title>
+  <title>Crypto Prices</title>
   <style>
     body {
-      background-color: #111;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    .marquee {
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      box-sizing: border-box;
-      border-bottom: 1px solid #222;
       background: #111;
       color: #eee;
-      padding: 10px 0;
-    }
-    .marquee-content {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 25s linear infinite;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
     }
     .token {
-      display: inline-block;
-      margin: 0 30px;
-      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 10px 20px;
+      margin: 10px auto;
+      width: fit-content;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    }
+    img {
+      width: 32px;
+      height: 32px;
     }
     .price {
-      margin-left: 5px;
       font-weight: bold;
-    }
-    .red {
-      color: #ff4d4d;
-    }
-    .green {
-      color: #4dff4d;
-    }
-    @keyframes marquee {
-      from { transform: translateX(0%); }
-      to   { transform: translateX(-100%); }
+      color: #4cafef;
     }
   </style>
 </head>
 <body>
-  <div class="marquee">
-    <div class="marquee-content" id="ticker"></div>
-  </div>
+  <h2>Bảng Giá Token (CoinGecko)</h2>
+  <div id="prices"></div>
 
   <script>
     async function loadPrices() {
-      const tokens = ["BTC", "SOL", "JUP", "JLP", "JTO", "ZEUS", "PUMP"];
-      const url = `https://price.jup.ag/v6/price?ids=${tokens.join(",")}&vsToken=USDC`;
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const ticker = document.getElementById("ticker");
-
-        ticker.innerHTML = "";
-        tokens.forEach(t => {
-          if (data.data[t]) {
-            const price = data.data[t].price.toFixed(2);
-            ticker.innerHTML += `<span class="token">${t} <span class="price">$${price}</span></span>`;
-          }
-        });
-      } catch (e) {
-        console.error("Error fetching prices:", e);
-      }
-    }
-
-    loadPrices();
-    setInterval(loadPrices, 30000); // update mỗi 30 giây
-  </script>
-</body>
-</html>
+      const ids = [
+        "bitcoin",                /
