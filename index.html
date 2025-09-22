@@ -80,37 +80,47 @@
       ];
       const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}`;
 
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
+          try {
+      const res = await fetch(url);
+      const data = await res.json();
 
-        const marquee = document.getElementById("marquee");
-        marquee.innerHTML = "";
+      const marquee = document.getElementById("marquee");
+      marquee.innerHTML = "";
 
-        if (!data.length) {
-          marquee.innerHTML = "<span>Lỗi tải dữ liệu...</span>";
-          return;
+      if (!data.length) {
+        marquee.innerHTML = "<span>Lỗi tải dữ liệu...</span>";
+        return;
+      }
+
+      data.forEach(token => {
+        const span = document.createElement("span");
+        span.className = "token";
+
+        // Chọn màu: xanh nếu tăng, đỏ nếu giảm
+        const priceChange = token.price_change_percentage_24h;
+        let color = "#ccc"; // neutral fallback
+        if (priceChange > 0) {
+          color = "#00ff7f"; // xanh lá
+        } else if (priceChange < 0) {
+          color = "#ff4d4f"; // đỏ
         }
 
-        data.forEach(token => {
-          const span = document.createElement("span");
-          span.className = "token";
-          span.innerHTML = `
-            <img src="${token.image}" alt="${token.symbol}">
-            <span>${token.symbol.toUpperCase()}</span>
-            <span class="price">$${token.current_price.toLocaleString()}</span>
-          `;
-          marquee.appendChild(span);
-        });
-      } catch (err) {
-        document.getElementById("marquee").innerText = "Lỗi tải giá...";
-        console.error(err);
-      }
+        span.innerHTML = `
+          <img src="${token.image}" alt="${token.symbol}">
+          <span>${token.symbol.toUpperCase()}</span>
+          <span class="price" style="color:${color}">
+            $${token.current_price.toLocaleString()}
+          </span>
+        `;
+        marquee.appendChild(span);
+      });
+    } catch (err) {
+      document.getElementById("marquee").innerText = "Lỗi tải giá...";
+      console.error(err);
     }
+  }
 
-    loadPrices();
-    setInterval(loadPrices, 60000); // cập nhật mỗi phút
-  </script>
-</body>
-</html>
+  loadPrices();
+  setInterval(loadPrices, 60000); // cập nhật mỗi phút
+</script>
 
