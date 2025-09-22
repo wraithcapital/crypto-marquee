@@ -1,54 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Crypto Marquee</title>
-  <script src="https://widgets.coingecko.com/gecko-coin-price-marquee-widget.js"></script>
+  <meta charset="utf-8" />
+  <title>Crypto Ticker (CoinGecko)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body {
-      background: #000;
-      margin: 0;
+    :root{
+      --bg:#000;
+      --bar:#0b0b0b;
+      --text:#e6eef8;
+      --muted:#98a8bd;
+      --up:#00ff88;
+      --down:#ff6b6b;
+    }
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,Helvetica,sans-serif}
+    .bar{
+      width:100%;
+      background:var(--bar);
+      padding:8px 12px;
+      box-sizing:border-box;
+      border-top:1px solid rgba(255,255,255,0.03);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      overflow:hidden;
     }
 
-    /* Ẩn tên dài */
-    gecko-coin-price-marquee-widget .coin-name {
-      display: none !important;
+    .scroller{
+      display:inline-block;
+      white-space:nowrap;
+      animation: scroll 30s linear infinite;
+      will-change: transform;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
     }
 
-    /* Ticker nổi bật */
-    gecko-coin-price-marquee-widget .coin-symbol {
-      font-weight: bold !important;
-      font-size: 14px !important;
-      color: #fff !important;
+    .token {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 16px;
+      margin-right:18px;
+      border-radius:999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      font-size:14px;
+      color:var(--text);
     }
-
-    /* Giá hiển thị rõ hơn */
-    gecko-coin-price-marquee-widget .coin-price {
-      font-size: 14px !important;
-      color: #ccc !important;
-    }
-
-    /* % thay đổi màu xanh/đỏ */
-    gecko-coin-price-marquee-widget .coin-change {
-      font-size: 13px !important;
-      font-weight: bold !important;
-    }
-    gecko-coin-price-marquee-widget .coin-change.positive {
-      color: #00ff88 !important; /* xanh lá */
-    }
-    gecko-coin-price-marquee-widget .coin-change.negative {
-      color: #ff4444 !important; /* đỏ */
-    }
-
-    /* Ẩn "Powered by CoinGecko" */
-    gecko-coin-price-marquee-widget::part(footer) {
-      display: none !important;
-    }
-  </style>
-</head>
-<body>
-  <gecko-coin-price-marquee-widget 
-    locale="vi"
-    dark-mode="true"
-    outlined="true"
-    coin-ids="bitcoin,solana,jupiter-exchange-solana,jupiter-perpetuals-liquidity-provide
+    .logo {
+      width:20px; height
