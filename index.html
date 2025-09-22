@@ -9,16 +9,37 @@
       background: #000;
       margin: 0;
     }
+
     /* Ẩn tên dài */
     gecko-coin-price-marquee-widget .coin-name {
       display: none !important;
     }
-    /* Làm ticker nổi bật */
+
+    /* Ticker nổi bật */
     gecko-coin-price-marquee-widget .coin-symbol {
       font-weight: bold !important;
       font-size: 14px !important;
       color: #fff !important;
     }
+
+    /* Giá hiển thị rõ hơn */
+    gecko-coin-price-marquee-widget .coin-price {
+      font-size: 14px !important;
+      color: #ccc !important;
+    }
+
+    /* % thay đổi màu xanh/đỏ */
+    gecko-coin-price-marquee-widget .coin-change {
+      font-size: 13px !important;
+      font-weight: bold !important;
+    }
+    gecko-coin-price-marquee-widget .coin-change.positive {
+      color: #00ff88 !important; /* xanh lá */
+    }
+    gecko-coin-price-marquee-widget .coin-change.negative {
+      color: #ff4444 !important; /* đỏ */
+    }
+
     /* Ẩn "Powered by CoinGecko" */
     gecko-coin-price-marquee-widget::part(footer) {
       display: none !important;
@@ -30,8 +51,4 @@
     locale="vi"
     dark-mode="true"
     outlined="true"
-    coin-ids="bitcoin,solana,jupiter-exchange-solana,jupiter-perpetuals-liquidity-provider-token,jito-governance-token,zeus-network,pump-fun,bonk,solayer"
-    initial-currency="usd">
-  </gecko-coin-price-marquee-widget>
-</body>
-</html>
+    coin-ids="bitcoin,solana,jupiter-exchange-solana,jupiter-perpetuals-liquidity-provide
