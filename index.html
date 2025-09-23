@@ -68,7 +68,8 @@
         "jupiter-exchange-solana",                                                                                                                      
         "jupiter-perpetuals-liquidity-provider-token",                                   
         "jupiter-staked-sol",                                
-        "uranus-4"                                                                  
+        "uranus-4"
+        "priceless"
       ];
       const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}`;
 
@@ -115,6 +116,7 @@
   loadPrices();
   setInterval(loadPrices, 60000); // cập nhật mỗi phút
 </script>
+
 
 
 
